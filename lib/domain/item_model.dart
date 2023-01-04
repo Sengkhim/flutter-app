@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
+
 class ItemModel {
   final String? id;
   final String? name;
   final String? description;
-  final num? qty;
+  final ValueNotifier<num>? qty;
   final num? price;
   final String? image;
 
@@ -16,7 +18,7 @@ class ItemModel {
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
         price: 3.15),
     ItemModel(
         id: "222",
@@ -24,7 +26,7 @@ class ItemModel {
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
         price: 3.25),
     ItemModel(
         id: "3333",
@@ -32,7 +34,7 @@ class ItemModel {
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
         price: 3.55),
     ItemModel(
         id: "4444",
@@ -40,7 +42,7 @@ class ItemModel {
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
         price: 3.5),
     ItemModel(
         id: "5555",
@@ -48,15 +50,39 @@ class ItemModel {
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
         price: 3.65),
     ItemModel(
-        id: "1111",
+        id: "6666",
         name: "Iced Test",
         image:
             "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
         description: "The best Cold drink.",
-        qty: 1,
+        qty: ValueNotifier<num>(1),
+        price: 3.12),
+    ItemModel(
+        id: "7777",
+        name: "Iced Test",
+        image:
+            "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
+        description: "The best Cold drink.",
+        qty: ValueNotifier<num>(1),
+        price: 3.12),
+    ItemModel(
+        id: "8888",
+        name: "Iced Test",
+        image:
+            "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
+        description: "The best Cold drink.",
+        qty: ValueNotifier<num>(1),
+        price: 3.12),
+    ItemModel(
+        id: "9999",
+        name: "Iced Test",
+        image:
+            "https://fastly.4sqi.net/img/general/600x600/5055791_kN2Ro9yNlLZs0m1atJshP-gPElrsK6pfhjoPuY_lKt8.jpg",
+        description: "The best Cold drink.",
+        qty: ValueNotifier<num>(1),
         price: 3.12)
   ];
 }

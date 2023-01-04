@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
-
-
+import '../../controller/animation/add_to_card_controller.dart';
 import '../../controller/item_controller.dart';
 import '../../domain/item_model.dart';
 
@@ -31,6 +30,7 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
   Widget build(BuildContext context) {
     return ListView.builder(
         // controller: _scrollController,
+        primary: true,
         itemCount: ItemModel.itemList.length,
         itemBuilder: (context, index) {
           return itemListBuilder(context, index);
@@ -46,36 +46,39 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
         motion: const DrawerMotion(),
         children: [
           Expanded(
-            child: Container(
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    const SizedBox(width: 8),
-                    adjustButtonBuilder(
-                      const Icon(Icons.add),
-                      onPressed: () {
-                        itemController.addItemToCard(
-                            item.name.toString(), item);
-                      },
-                    ),
-                    Consumer<ItemController>(builder: ((context, value, child) {
-                      return Text(value.currentQtyItem(item.name.toString()),
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.w400));
-                    })),
-                    adjustButtonBuilder(
-                      const Icon(Icons.remove),
-                      onPressed: () {
-                        itemController.removeItemFormCard(item);
-                      },
-                    ),
-                    const SizedBox(width: 8),
-                  ],
-                )),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Container(
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      const SizedBox(width: 8),
+                      adjustButtonBuilder(
+                        const Icon(Icons.add),
+                        onPressed: () {
+                          itemController.addItemToCard(item.id, item);
+                        },
+                      ),
+                      Consumer<ItemController>(
+                          builder: ((context, value, child) {
+                        return Text(value.currentQtyItem(item.id)!,
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.w400));
+                      })),
+                      adjustButtonBuilder(
+                        const Icon(Icons.remove),
+                        onPressed: () {
+                          itemController.removeItemFormCard(item);
+                        },
+                      ),
+                      const SizedBox(width: 8),
+                    ],
+                  )),
+            ),
           ),
         ],
       ),
@@ -111,9 +114,15 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
             radius: 32,
             backgroundImage: NetworkImage(item.image.toString()),
           ),
-          trailing: IconButton(
-            icon: const Icon(Icons.shopping_cart, size: 30),
-            onPressed: () {},
+          trailing: Consumer2<AddToCardBuilderController, ItemController>(
+            builder: (context, value, itemController, child) => IconButton(
+              icon: const Icon(Icons.shopping_cart, size: 30),
+              onPressed: () async {
+                value.animateBuilder();
+                await value.disposeAnimateBuilder();
+                await itemController.addItemToCard(item.id, item);
+              },
+            ),
           ),
           title: Text(
             item.name.toString(),
