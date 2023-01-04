@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-class AddToCartAnimation extends StatefulWidget {
-  const AddToCartAnimation({super.key});
+class AddToCartAnimationBuilder extends StatefulWidget {
+  const AddToCartAnimationBuilder({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _AddToCartAnimationState createState() => _AddToCartAnimationState();
+  _AddToCartAnimationBuilderState createState() =>
+      _AddToCartAnimationBuilderState();
 }
 
-class _AddToCartAnimationState extends State<AddToCartAnimation>
+class _AddToCartAnimationBuilderState extends State<AddToCartAnimationBuilder>
     with TickerProviderStateMixin {
   late AnimationController _controller;
   @override
@@ -16,7 +17,8 @@ class _AddToCartAnimationState extends State<AddToCartAnimation>
     super.initState();
     _controller =
         AnimationController(duration: const Duration(seconds: 1), vsync: this)
-          ..forward();
+          ..animateTo(50,
+              duration: const Duration(seconds: 10), curve: Curves.ease);
   }
 
   @override
@@ -39,7 +41,7 @@ class _AddToCartAnimationState extends State<AddToCartAnimation>
                         biggest.width, biggest.height),
                     biggest),
                 end: RelativeRect.fromSize(
-                    Rect.fromLTRB(biggest.width - 80, -710, biggest.width,
+                    Rect.fromLTRB(biggest.width - 80, -720, biggest.width,
                         biggest.height),
                     biggest),
               ).animate(

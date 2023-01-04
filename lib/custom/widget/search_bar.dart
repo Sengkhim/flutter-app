@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class SearchBar extends StatelessWidget {
-  const SearchBar({
+class SearchBuilder extends StatelessWidget {
+  const SearchBuilder({
     Key? key,
   }) : super(key: key);
 
@@ -16,7 +16,7 @@ class SearchBar extends StatelessWidget {
       child: TextFormField(
         cursorColor: Colors.black,
         textAlign: TextAlign.left,
-        style: const TextStyle(fontSize: 11.0),
+        style: const TextStyle(fontSize: 16.0),
         decoration: const InputDecoration(
             border: InputBorder.none,
             focusedBorder: InputBorder.none,
@@ -24,7 +24,7 @@ class SearchBar extends StatelessWidget {
             errorBorder: InputBorder.none,
             disabledBorder: InputBorder.none,
             hintText: 'Search',
-            hintStyle: TextStyle(color: Colors.black, fontSize: 16),
+            hintStyle: TextStyle(color: Colors.black, fontSize: 16.0),
             icon: Padding(
               padding: EdgeInsets.only(left: 8.0),
               child: Icon(

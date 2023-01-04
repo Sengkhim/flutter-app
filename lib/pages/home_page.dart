@@ -1,4 +1,5 @@
 import 'package:cool_app/controller/animation/add_to_card_controller.dart';
+import 'package:cool_app/controller/widget_builder_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/item_controller.dart';
@@ -6,6 +7,7 @@ import '../custom/widget/categories_builder.dart';
 import '../custom/widget/list_view_item_builder.dart';
 import '../custom/widget/san_box.dart';
 import '../custom/widget/search_bar.dart';
+import '../custom/widget/sliver_appbar_delegate.dart';
 
 var image = [
   'https://restaurantclicks.com/wp-content/uploads/2022/09/Starbucks-Decaf-Coffee-Drinks.jpg',
@@ -40,55 +42,83 @@ class _HomePageState extends State<HomePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: SafeArea(
-            child: Stack(
-      children: [
-        firstBodyBuilder(),
+      body: SafeArea(
+          child: Stack(
+        children: [
+          // seconaryBodyBuilder(),
+          firstBodyBuilder(),
 
-        //animation add item to cart
-        Consumer<AddToCardBuilderController>(
-          builder: (context, value, child) => Container(
-            child: value.flyingcart,
-          ),
-        )
-      ],
-    )));
+          //animation add item to cart
+          Consumer<AddToCardBuilder>(
+            builder: (context, value, child) => Container(
+              child: value.flyingcart,
+            ),
+          )
+        ],
+      )),
+      // floatingActionButton: floatingActionButtonBuilder()
+    );
+  }
+
+  floatingActionButtonBuilder() {
+    return Consumer<WidgetBuilderController>(
+      builder: (context, value, child) => Visibility(
+          visible: value.visible,
+          child: FloatingActionButton(
+            isExtended: true,
+            backgroundColor: Colors.grey.withOpacity(0.4),
+            onPressed: () {},
+            child: notificationCardBuilder(
+                icon: const Icon(
+              Icons.shopping_bag,
+              size: 30,
+              color: Colors.grey,
+            )),
+          )),
+    );
   }
 
   Widget firstBodyBuilder() {
     return NestedScrollView(
+        // floatHeaderSlivers: true,
         headerSliverBuilder: ((context, innerBoxIsScrolled) {
-          return [
-            SliverAppBar(
-              backgroundColor: Colors.white,
-              floating: true,
-              pinned: true,
-              bottom: tabBarBuilder(),
-              actions: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16, top: 8),
-                  child: notificationCardBuilder(
-                      icon: const Icon(
-                    Icons.shopping_bag,
-                    size: 32,
-                    color: Colors.grey,
-                  )),
-                )
-                // Container(
-                //   color: Colors.blue,
-                //   width: 50,
-                //   height: 50,
-                // )
-              ],
-              expandedHeight: 500,
-              flexibleSpace: FlexibleSpaceBar(
-                collapseMode: CollapseMode.pin,
-                background: bodyElement(context),
-              ),
-            )
-          ];
+          return [sliverAppBarBuilder(context)];
         }),
         body: tabBarViewBuilder());
+  }
+
+  Widget seconaryBodyBuilder() {
+    return CustomScrollView(
+      slivers: [
+        sliverAppBarBuilder(context),
+        SliverPersistentHeader(delegate: SliverAppBarDelegate(tabBarBuilder()))
+      ],
+    );
+  }
+
+  Widget sliverAppBarBuilder(BuildContext context) {
+    return SliverAppBar(
+      backgroundColor: Colors.white,
+      floating: true,
+      pinned: true,
+      bottom: tabBarBuilder(),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16, top: 8),
+          child: notificationCardBuilder(
+              icon: const Icon(
+            Icons.shopping_bag,
+            size: 30,
+            color: Colors.grey,
+          )),
+        )
+      ],
+      expandedHeight: 500,
+      flexibleSpace: FlexibleSpaceBar(
+        collapseMode: CollapseMode.pin,
+        background: bodyElement(context),
+      ),
+    );
   }
 
   Widget bodyBuilder() {
@@ -115,7 +145,7 @@ class _HomePageState extends State<HomePage>
         headerBuilder(context),
 
         // //search builder
-        const SearchBar(),
+        const SearchBuilder(),
 
         //Recommanded
         const Align(
@@ -181,7 +211,17 @@ class _HomePageState extends State<HomePage>
       tabs: [
         ...categories.map(
           (item) => Tab(
-            child: categoriesBuilder(item),
+            child: Column(
+              children: [
+                // notificationCardBuilder(
+                //     icon: const Icon(
+                //   Icons.shopping_bag,
+                //   size: 30,
+                //   color: Colors.grey,
+                // )),
+                categoriesBuilder(item),
+              ],
+            ),
           ),
         ),
       ],
@@ -219,9 +259,14 @@ class _HomePageState extends State<HomePage>
                     textAlign: TextAlign.center,
                   ),
                 ),
-          IconButton(
-            onPressed: () {},
-            icon: icon,
+          Container(
+            decoration: BoxDecoration(
+                color: Colors.grey.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(50)),
+            child: IconButton(
+              onPressed: () {},
+              icon: icon,
+            ),
           ),
         ]);
       },

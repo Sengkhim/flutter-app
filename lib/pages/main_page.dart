@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../controller/navigation_page_controller.dart';
+import '../controller/widget_builder_controller.dart';
 import 'base/page_handler.dart';
 import 'favorite_page.dart';
 import 'home_page.dart';
@@ -15,8 +15,8 @@ class MainPage extends StatelessWidget {
       const FavoritePage(),
       const SettingPage()
     ];
-    return PageHandler<NavigationController>(
-        create: (context) => NavigationController(),
+    return PageHandler<WidgetBuilderController>(
+        create: (context) => WidgetBuilderController(),
         builder: (context, controller, child) {
           return Scaffold(
             body: SafeArea(
@@ -29,7 +29,7 @@ class MainPage extends StatelessWidget {
         });
   }
 
-  Widget bottomNavBarBuilder(NavigationController controller) {
+  Widget bottomNavBarBuilder(WidgetBuilderController controller) {
     return BottomNavigationBar(
       items: <BottomNavigationBarItem>[
         childBottomNavBar(label: "Home", icon: Icons.home),

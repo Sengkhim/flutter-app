@@ -17,7 +17,7 @@ class ItemController extends BaseController {
     updateChange();
   }
 
-  String? currentQtyItem(String? id) {
+  String? currentQtyItem(String id) {
     int indexer = ItemModel.itemList.indexWhere((element) => element.id == id);
     if (_itemListCard.isEmpty) {
       return "1";
