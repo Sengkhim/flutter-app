@@ -1,3 +1,4 @@
+import 'package:cool_app/controller/animation/add_to_card_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/item_controller.dart';
@@ -23,6 +24,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
@@ -37,55 +39,65 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: bodyBuilder());
+    return Scaffold(
+        body: SafeArea(
+            child: Stack(
+      children: [
+        firstBodyBuilder(),
+
+        //animation add item to cart
+        Consumer<AddToCardBuilderController>(
+          builder: (context, value, child) => Container(
+            child: value.flyingcart,
+          ),
+        )
+      ],
+    )));
+  }
+
+  Widget firstBodyBuilder() {
+    return NestedScrollView(
+        headerSliverBuilder: ((context, innerBoxIsScrolled) {
+          return [
+            SliverAppBar(
+              backgroundColor: Colors.white,
+              floating: true,
+              pinned: true,
+              bottom: tabBarBuilder(),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 16, top: 8),
+                  child: notificationCardBuilder(
+                      icon: const Icon(
+                    Icons.shopping_bag,
+                    size: 32,
+                    color: Colors.grey,
+                  )),
+                )
+                // Container(
+                //   color: Colors.blue,
+                //   width: 50,
+                //   height: 50,
+                // )
+              ],
+              expandedHeight: 500,
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.pin,
+                background: bodyElement(context),
+              ),
+            )
+          ];
+        }),
+        body: tabBarViewBuilder());
   }
 
   Widget bodyBuilder() {
     return NestedScrollView(
+      floatHeaderSlivers: true,
       headerSliverBuilder: (context, innerBoxIsScrolled) {
         return [
           SliverToBoxAdapter(
-            child: Column(
-              children: [
-                //builder header
-                headerBuilder(context),
-
-                // //search builder
-                const SearchBar(),
-
-                //Recommanded
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-                      child: Text("Recommanded",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16.5))),
-                ),
-
-                // //page view builder
-                // // _pageViewBuilder()
-                SizedBox(
-                    height: 220,
-                    width: MediaQuery.of(context).size.width,
-                    child: const Sandbox()),
-
-                //categoies_builder
-                const Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                      child: Text("Categories",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16.5))),
-                ),
-
-                //tabBarBuilder
-                tabBarBuilder(),
-              ],
-            ),
+            child: bodyElement(context),
           )
         ];
       },
@@ -96,8 +108,51 @@ class _HomePageState extends State<HomePage>
     );
   }
 
+  Widget bodyElement(BuildContext context) {
+    return Column(
+      children: [
+        //builder header
+        headerBuilder(context),
+
+        // //search builder
+        const SearchBar(),
+
+        //Recommanded
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+              child: Text("Recommanded",
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))),
+        ),
+
+        //page view builder
+        SizedBox(
+            height: 220,
+            width: MediaQuery.of(context).size.width,
+            child: const Sandbox()),
+
+        // categoies_builder
+        const Align(
+          alignment: Alignment.centerLeft,
+          child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: Text("Categories",
+                  style:
+                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))),
+        ),
+
+        //tabBarBuilder
+        // tabBarBuilder(),
+      ],
+    );
+  }
+
   Widget tabBarViewBuilder() {
     return TabBarView(
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      physics: const NeverScrollableScrollPhysics(),
       controller: _tabController,
       children: const [
         ViewItemBuilder(),
@@ -109,9 +164,10 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget tabBarBuilder() {
+  TabBar tabBarBuilder() {
     return TabBar(
       controller: _tabController,
+      // physics: const NeverScrollableScrollPhysics(),
       unselectedLabelColor: Colors.black,
       indicatorSize: TabBarIndicatorSize.tab,
       labelColor: Colors.black.withOpacity(0.3),
@@ -133,28 +189,29 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget headerBuilder(BuildContext context) {
-    return ListTile(
-        title: const Text("Hello Bro & Sis",
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-        subtitle: const Text("Discount 20 percent for ordering now"),
-        trailing: notificationCardBuilder(
-            icon: const Icon(
-          Icons.shopify_outlined,
-          size: 32,
-        )));
+    return const ListTile(
+      title: Text("Hello Bro & Sis",
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+      subtitle: Text("Discount 20 percent for ordering now"),
+      // trailing: notificationCardBuilder(
+      //     icon: const Icon(
+      //   Icons.shopping_bag,
+      //   size: 32,
+      // ))
+    );
   }
 
   Widget notificationCardBuilder({required Widget icon}) {
     return Consumer<ItemController>(
       builder: (context, item, child) {
         return Stack(alignment: Alignment.topRight, children: [
-          item.currentCard == "0"
+          item.counter == 1
               ? const SizedBox()
               : CircleAvatar(
                   backgroundColor: Colors.red[600],
-                  radius: 12,
+                  radius: 10,
                   child: Text(
-                    item.itemListCard.length >= 10 ? " 9+" : item.currentCard,
+                    item.counter >= 10 ? "9+" : item.counter.toString(),
                     style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12.5,
