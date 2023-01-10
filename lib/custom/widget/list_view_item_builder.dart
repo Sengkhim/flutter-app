@@ -1,4 +1,5 @@
-import 'package:cool_app/controller/widget_builder_controller.dart';
+import 'package:cool_app/controller/widget/widget_builder_controller.dart';
+import 'package:cool_app/enum/notification_type.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -6,7 +7,8 @@ import 'package:provider/provider.dart';
 import '../../controller/animation/add_to_card_controller.dart';
 import '../../controller/item_controller.dart';
 import '../../domain/item_model.dart';
-import 'notification_builder.dart';
+import '../../enum/add_to_card_action.dart';
+import 'button/button_card.dart';
 
 class ViewItemBuilder extends StatefulWidget {
   const ViewItemBuilder({super.key});
@@ -77,11 +79,14 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       const SizedBox(width: 8),
-                      adjustButtonBuilder(
-                        const Icon(Icons.add),
-                        onPressed: () {
-                          itemController.addItemToCard(item.id, item);
-                        },
+                      Consumer<AddToCardBuilder>(
+                        builder: (context, value, child) => adjustButtonBuilder(
+                          const Icon(Icons.add),
+                          onPressed: () {
+                            value.modifieAction(AddToCartAction.onAdjustment);
+                            itemController.addItemToCard(item.id, item);
+                          },
+                        ),
                       ),
                       Consumer<ItemController>(
                           builder: ((context, value, child) {
@@ -89,11 +94,14 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.w400));
                       })),
-                      adjustButtonBuilder(
-                        const Icon(Icons.remove),
-                        onPressed: () {
-                          itemController.removeItemFormCard(item);
-                        },
+                      Consumer<AddToCardBuilder>(
+                        builder: (context, value, child) => adjustButtonBuilder(
+                          const Icon(Icons.remove),
+                          onPressed: () {
+                            value.modifieAction(AddToCartAction.onAdjustment);
+                            itemController.removeItemFormCard(item);
+                          },
+                        ),
                       ),
                       const SizedBox(width: 8),
                     ],
@@ -102,7 +110,7 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
           ),
         ],
       ),
-      child: itemContainerBuilder(item, context),
+      child: _containerBuilder(item, context),
     );
   }
 
@@ -122,7 +130,7 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
     );
   }
 
-  Widget itemContainerBuilder(ItemModel item, BuildContext context) {
+  Widget _containerBuilder(ItemModel item, BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(2.0),
       child: Container(
@@ -135,47 +143,29 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
             backgroundImage: NetworkImage(item.image.toString()),
           ),
           trailing: Consumer2<AddToCardBuilder, ItemController>(
-            builder: (context, value, itemController, child) => IconButton(
-              icon: Stack(alignment: Alignment.topRight, children: [
-                itemController.currentQtyItem(item.id.toString()).toString() ==
-                        "1"
-                    ? const SizedBox()
-                    : NotificationBuilder(
-                        value: itemController
-                            .currentQtyItem(item.id.toString())
-                            .toString(),
-                        icon: const Icon(
-                          Icons.shopping_bag,
-                          size: 30,
-                          color: Colors.grey,
-                        ),
-                        onPressed: () {},
-                      )
-                // CircleAvatar(
-                //     backgroundColor: Colors.red[600],
-                //     radius: 10,
-                //     child: Text(
-                //       itemController
-                //           .currentQtyItem(item.id.toString())
-                //           .toString(),
-                //       style: const TextStyle(
-                //           color: Colors.white,
-                //           fontSize: 12.5,
-                //           fontWeight: FontWeight.bold),
-                //     ),
-                //   )
-                ,
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.shopping_cart, size: 32),
-                ),
-              ]),
-              onPressed: () async {
-                value.animateBuilder();
-                await value.disposeAnimateBuilder();
-                itemController.addItemToCard(item.id, item);
-              },
-            ),
+            builder: (context, cartController, itemController, child) {
+              return ButtonCartBuilder(
+                item: item,
+                value: itemController
+                    .currentQtyItem(item.id.toString())
+                    .toString(),
+                notificationType: NotificationType.none,
+                icon: const Icon(Icons.shopping_cart, size: 32),
+                onPressed: () async {
+                  switch (cartController.currentCardAction) {
+                    case AddToCartAction.onAdjustment:
+                      itemController.addItemToCard(item.id, item);
+                      break;
+                    case AddToCartAction.onClick:
+                      cartController.animateBuilder();
+                      await cartController.disposeAnimateBuilder();
+                      itemController.submitedCart(itemController.itemListCard);
+                      break;
+                    default:
+                  }
+                },
+              );
+            },
           ),
           title: Text(
             item.name.toString(),

@@ -1,13 +1,15 @@
 import 'package:cool_app/controller/animation/add_to_card_controller.dart';
-import 'package:cool_app/controller/widget_builder_controller.dart';
+import 'package:cool_app/controller/product_controller.dart';
+import 'package:cool_app/controller/widget/widget_builder_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/item_controller.dart';
+import '../custom/widget/button/button_card.dart';
 import '../custom/widget/categories_builder.dart';
 import '../custom/widget/list_view_item_builder.dart';
 import '../custom/widget/san_box.dart';
 import '../custom/widget/search_bar.dart';
-import '../custom/widget/sliver_appbar_delegate.dart';
+import '../enum/notification_type.dart';
 
 var image = [
   'https://restaurantclicks.com/wp-content/uploads/2022/09/Starbucks-Decaf-Coffee-Drinks.jpg',
@@ -31,6 +33,7 @@ class _HomePageState extends State<HomePage>
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: categories.length);
+    // Provider.of<ProductController>(context, listen: false).service.getAll();
   }
 
   @override
@@ -87,14 +90,14 @@ class _HomePageState extends State<HomePage>
         body: tabBarViewBuilder());
   }
 
-  Widget seconaryBodyBuilder() {
-    return CustomScrollView(
-      slivers: [
-        sliverAppBarBuilder(context),
-        SliverPersistentHeader(delegate: SliverAppBarDelegate(tabBarBuilder()))
-      ],
-    );
-  }
+  // Widget seconaryBodyBuilder() {
+  //   return CustomScrollView(
+  //     slivers: [
+  //       sliverAppBarBuilder(context),
+  //       SliverPersistentHeader(delegate: SliverAppBarDelegate(tabBarBuilder()))
+  //     ],
+  //   );
+  // }
 
   Widget sliverAppBarBuilder(BuildContext context) {
     return SliverAppBar(
@@ -158,10 +161,10 @@ class _HomePageState extends State<HomePage>
         ),
 
         //page view builder
-        SizedBox(
-            height: 220,
-            width: MediaQuery.of(context).size.width,
-            child: const Sandbox()),
+        // SizedBox(
+        //     height: 220,
+        //     width: MediaQuery.of(context).size.width,
+        //     child: const Sandbox()),
 
         // categoies_builder
         const Align(
@@ -213,12 +216,6 @@ class _HomePageState extends State<HomePage>
           (item) => Tab(
             child: Column(
               children: [
-                // notificationCardBuilder(
-                //     icon: const Icon(
-                //   Icons.shopping_bag,
-                //   size: 30,
-                //   color: Colors.grey,
-                // )),
                 categoriesBuilder(item),
               ],
             ),
@@ -233,42 +230,32 @@ class _HomePageState extends State<HomePage>
       title: Text("Hello Bro & Sis",
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
       subtitle: Text("Discount 20 percent for ordering now"),
-      // trailing: notificationCardBuilder(
-      //     icon: const Icon(
-      //   Icons.shopping_bag,
-      //   size: 32,
-      // ))
     );
   }
 
   Widget notificationCardBuilder({required Widget icon}) {
-    return Consumer<ItemController>(
-      builder: (context, item, child) {
-        return Stack(alignment: Alignment.topRight, children: [
-          item.counter == 1
-              ? const SizedBox()
-              : CircleAvatar(
-                  backgroundColor: Colors.red[600],
-                  radius: 10,
-                  child: Text(
-                    item.counter >= 10 ? "9+" : item.counter.toString(),
-                    style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 12.5,
-                        fontWeight: FontWeight.bold),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(50)),
-            child: IconButton(
-              onPressed: () {},
-              icon: icon,
-            ),
-          ),
-        ]);
+    return Consumer2<AddToCardBuilder, ItemController>(
+      builder: (context, cartController, itemController, child) {
+        return ButtonCartBuilder(
+          value: "5",
+          // value: itemController.currentQtyItem(item.id.toString()).toString(),
+          notificationType: NotificationType.appBar,
+          icon: Container(
+              alignment: Alignment.center,
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                  color: Colors.grey.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(50)),
+              child: const Icon(Icons.shopping_bag_rounded,
+                  size: 30, color: Colors.grey)),
+          onPressed: () async {
+            // cartController.animateBuilder();
+            // await cartController.disposeAnimateBuilder();
+            // itemController.addItemToCard(item.id, item);
+            // itemController.submitedCart(itemController.itemListCard);
+          },
+        );
       },
     );
   }

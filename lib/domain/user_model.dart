@@ -1,4 +1,4 @@
-import '../reposity/dao.dart';
+import '../repository/dao.dart';
 import 'base/identity_model.dart';
 
 class UserModel extends IIdentity<String>

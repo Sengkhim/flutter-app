@@ -40,10 +40,8 @@ class CategoriesBuilder extends StatelessWidget {
 
 Widget categoriesBuilder(String title) {
   return Container(
-    // margin: const EdgeInsets.only(left: 20, top: 10),
+    padding: const EdgeInsets.all(10),
     alignment: Alignment.center,
-    height: 35,
-    width: 80,
     decoration: BoxDecoration(
         color: Colors.black.withOpacity(0.2),
         borderRadius: BorderRadius.circular(15)),

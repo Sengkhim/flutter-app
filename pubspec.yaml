@@ -40,6 +40,9 @@ dependencies:
   path: ^1.8.2
   provider: ^6.0.5
   flutter_slidable: ^2.0.0
+  http_interceptor: ^1.0.2
+  dio: ^4.0.6
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:

@@ -1,7 +1,7 @@
 // ignore: file_names
 import 'dart:async';
 import 'package:sqflite/sqflite.dart';
-import '../reposity/dispose.dart';
+import '../repository/dispose.dart';
 
 abstract class DbContextProvder {
   Database? _context;

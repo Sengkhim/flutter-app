@@ -1,4 +1,4 @@
-import 'base_controller.dart';
+import '../base_controller.dart';
 
 class WidgetBuilderController extends BaseController {
   num _currentPage = 0;
