@@ -145,6 +145,7 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
           trailing: Consumer2<AddToCardBuilder, ItemController>(
             builder: (context, cartController, itemController, child) {
               return ButtonCartBuilder(
+                padding: const EdgeInsets.all(0),
                 item: item,
                 value: itemController
                     .currentQtyItem(item.id.toString())

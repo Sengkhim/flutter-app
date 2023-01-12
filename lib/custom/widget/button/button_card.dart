@@ -9,12 +9,14 @@ class ButtonCartBuilder extends StatelessWidget {
       required this.value,
       required this.notificationType,
       this.onPressed,
-      required this.icon});
+      required this.icon,
+      required this.padding});
   final ItemModel? item;
   final String value;
   final NotificationType notificationType;
   final VoidCallback? onPressed;
   final Widget icon;
+  final EdgeInsetsGeometry padding;
   @override
   Widget build(BuildContext context) {
     return notificationHandler();
@@ -58,29 +60,35 @@ class ButtonCartBuilder extends StatelessWidget {
   }
 
   Widget badgeBarCart() {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        value == "1"
-            ? const SizedBox()
-            : CircleAvatar(
-                backgroundColor: Colors.red,
-                radius: 10,
-                child: Text(
-                  num.parse(value) >= 10 ? "9+" : value,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 12.5,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center,
+    return Padding(
+      padding: padding,
+      child: Stack(
+        alignment: Alignment.topRight,
+        children: [
+          value == "1"
+              ? const SizedBox()
+              : CircleAvatar(
+                  backgroundColor: Colors.red,
+                  radius: 10,
+                  child: Text(
+                    num.parse(value) >= 10 ? "9+" : value,
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-        icon
-        // IconButton(
-        //   icon: icon,
-        //   onPressed: onPressed,
-        // )
-      ],
+          IconButton(
+            icon: icon,
+            onPressed: onPressed,
+          )
+          // IconButton(
+          //   icon: icon,
+          //   onPressed: onPressed,
+          // )
+        ],
+      ),
     );
   }
 }

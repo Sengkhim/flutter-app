@@ -14,4 +14,9 @@ class WidgetBuilderController extends BaseController {
     _currentPage = index;
     updateChange();
   }
+
+  bool actionNavigation(int index) {
+    if (index == _currentPage) return true;
+    return false;
+  }
 }

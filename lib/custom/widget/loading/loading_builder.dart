@@ -1,26 +1,36 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-class LoadingBuilder extends StatelessWidget {
-  const LoadingBuilder(
+class ShimmerLoadingBuilder extends StatelessWidget {
+  const ShimmerLoadingBuilder.rectangular({
+    super.key,
+    // this.width = double.infinity,
+    required this.width,
+    required this.height,
+  }) : shapeBorder = const RoundedRectangleBorder();
+
+  const ShimmerLoadingBuilder.circular(
       {super.key,
-      required this.child,
-      required this.baseColor,
-      required this.highlightColor,
-      required this.enabled});
-  final Widget child;
-  final Color baseColor;
-  final Color highlightColor;
-  final bool enabled;
+      required this.width,
+      required this.height,
+      this.shapeBorder = const CircleBorder()});
+
+  final double width;
+  final double height;
+  final ShapeBorder shapeBorder;
+
   @override
   Widget build(BuildContext context) {
-    // return const CupertinoActivityIndicator();
     return Shimmer.fromColors(
-        enabled: enabled,
-        baseColor: baseColor,
-        highlightColor: highlightColor,
-        direction: ShimmerDirection.ltr,
+        enabled: true,
+        baseColor: Colors.grey[300]!,
+        highlightColor: Colors.white,
         period: const Duration(milliseconds: 2500),
-        child: child);
+        child: Container(
+          width: width,
+          height: height,
+          decoration:
+              ShapeDecoration(color: Colors.grey[300], shape: shapeBorder),
+        ));
   }
 }

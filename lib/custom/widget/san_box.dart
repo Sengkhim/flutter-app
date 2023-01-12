@@ -1,7 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-import '../../pages/home_page.dart';
+var image = [
+  "https://i.dummyjson.com/data/products/16/1.png",
+  // "https://i.dummyjson.com/data/products/16/3.jpg",
+  // "https://i.dummyjson.com/data/products/16/4.jpg",
+  // "https://i.dummyjson.com/data/products/16/thumbnail.jpg"
+];
 
 class Sandbox extends StatefulWidget {
   const Sandbox({super.key});
@@ -77,54 +82,67 @@ class SandboxState extends State<Sandbox> {
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: PageView(
-          controller: _pageController,
-          children: [
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 20),
-              height: 220,
-              width: MediaQuery.of(context).size.width - 20,
-              margin: const EdgeInsets.only(right: 5, left: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xFF9294cc),
-                  image: DecorationImage(
-                      fit: BoxFit.cover, image: NetworkImage(image[0]))),
+            controller: _pageController,
+            children: List.generate(image.length, (index) {
+              return Container(
+                padding: const EdgeInsets.only(left: 20, top: 20),
+                height: 220,
+                width: MediaQuery.of(context).size.width - 20,
+                margin: const EdgeInsets.only(right: 5, left: 5),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: const Color(0xFF9294cc),
+                    image: DecorationImage(
+                        fit: BoxFit.cover, image: NetworkImage(image[index]))),
+              );
+            })
+            // [
+            // Container(
+            //   padding: const EdgeInsets.only(left: 20, top: 20),
+            //   height: 220,
+            //   width: MediaQuery.of(context).size.width - 20,
+            //   margin: const EdgeInsets.only(right: 5, left: 5),
+            //   decoration: BoxDecoration(
+            //       borderRadius: BorderRadius.circular(30),
+            //       color: const Color(0xFF9294cc),
+            //       image: DecorationImage(
+            //           fit: BoxFit.cover, image: NetworkImage(image[0]))),
+            // ),
+            //   Container(
+            //     padding: const EdgeInsets.only(left: 20, top: 20),
+            //     height: 220,
+            //     width: MediaQuery.of(context).size.width - 20,
+            //     margin: const EdgeInsets.only(right: 5, left: 5),
+            //     decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(30),
+            //         color: const Color(0xFF9294cc),
+            //         image: DecorationImage(
+            //             fit: BoxFit.cover, image: NetworkImage(image[1]))),
+            //   ),
+            //   Container(
+            //     padding: const EdgeInsets.only(left: 20, top: 20),
+            //     height: 220,
+            //     width: MediaQuery.of(context).size.width - 20,
+            //     margin: const EdgeInsets.only(right: 5, left: 5),
+            //     decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(30),
+            //         color: const Color(0xFF9294cc),
+            //         image: DecorationImage(
+            //             fit: BoxFit.cover, image: NetworkImage(image[2]))),
+            //   ),
+            //   Container(
+            //     padding: const EdgeInsets.only(left: 20, top: 20),
+            //     height: 220,
+            //     width: MediaQuery.of(context).size.width - 20,
+            //     margin: const EdgeInsets.only(right: 5, left: 5),
+            //     decoration: BoxDecoration(
+            //         borderRadius: BorderRadius.circular(30),
+            //         color: const Color(0xFF9294cc),
+            //         image: DecorationImage(
+            //             fit: BoxFit.cover, image: NetworkImage(image[3]))),
+            //   )
+            // ],
             ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 20),
-              height: 220,
-              width: MediaQuery.of(context).size.width - 20,
-              margin: const EdgeInsets.only(right: 5, left: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xFF9294cc),
-                  image: DecorationImage(
-                      fit: BoxFit.cover, image: NetworkImage(image[1]))),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 20),
-              height: 220,
-              width: MediaQuery.of(context).size.width - 20,
-              margin: const EdgeInsets.only(right: 5, left: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xFF9294cc),
-                  image: DecorationImage(
-                      fit: BoxFit.cover, image: NetworkImage(image[2]))),
-            ),
-            Container(
-              padding: const EdgeInsets.only(left: 20, top: 20),
-              height: 220,
-              width: MediaQuery.of(context).size.width - 20,
-              margin: const EdgeInsets.only(right: 5, left: 5),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: const Color(0xFF9294cc),
-                  image: DecorationImage(
-                      fit: BoxFit.cover, image: NetworkImage(image[3]))),
-            )
-          ],
-        ),
       ),
     );
   }

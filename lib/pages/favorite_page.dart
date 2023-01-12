@@ -14,7 +14,7 @@ class FavoritePage extends StatefulWidget {
 class _FavoritePageState extends State<FavoritePage> {
   @override
   void initState() {
-    Provider.of<ProductController>(context, listen: false).loadProduct();
+    // Provider.of<ProductController>(context, listen: false).loadProduct();
     super.initState();
   }
 
@@ -26,7 +26,7 @@ class _FavoritePageState extends State<FavoritePage> {
         child: Stack(
           alignment: Alignment.center,
           children: [
-             const Text("data"),
+            // loading()
             // bodyBuilder(),
           ],
         ),
@@ -34,18 +34,30 @@ class _FavoritePageState extends State<FavoritePage> {
     );
   }
 
-  Widget bodyBuilder() {
-    return Consumer<ProductController>(builder: (context, controller, child) {
-      return controller.loadingState == LoadingState.onProcessing
-          ? LoadingBuilder(
-              enabled: true,
-              baseColor: Colors.white,
-              highlightColor: Colors.grey.withOpacity(0.1),
-              child: objectBuilder(controller),
-            )
-          : objectBuilder(controller);
-    });
-  }
+  // Widget loading() {
+  //   return ListView.builder(
+  //       itemCount: 5,
+  //       itemBuilder: (context, index) {
+  //         return const ListTile(
+  //           leading: ShimmerLoadingBuilder.rectangular(height: 64, width: 64),
+  //           title: ShimmerLoadingBuilder.rectangular(height: 16),
+  //           subtitle: ShimmerLoadingBuilder.rectangular(height: 14),
+  //         );
+  //       });
+  // }
+
+  // Widget bodyBuilder() {
+  //   return Consumer<ProductController>(builder: (context, controller, child) {
+  //     return controller.loadingState == LoadingState.onProcessing
+  //         ? LoadingBuilder(
+  //             enabled: true,
+  //             baseColor: Colors.white,
+  //             highlightColor: Colors.grey.withOpacity(0.1),
+  //             child: objectBuilder(controller),
+  //           )
+  //         : objectBuilder(controller);
+  //   });
+  // }
 
   Widget objectBuilder(ProductController controller) {
     return ListView.builder(
@@ -57,8 +69,8 @@ class _FavoritePageState extends State<FavoritePage> {
             decoration: const BoxDecoration(color: Colors.white),
             child: ListTile(
               leading: Container(
-                height: 100,
-                width: 80,
+                  height: 100,
+                  width: 80,
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image:

@@ -28,6 +28,11 @@ class ProductController extends BaseController {
     updateChange();
   }
 
+  bool tabBarAction(String name) {
+    if (name == currentCategory) return true;
+    return false;
+  }
+
   Future<void> loadProduct() async {
     onChangeState(LoadingState.onProcessing);
     var result = await service.getAll();

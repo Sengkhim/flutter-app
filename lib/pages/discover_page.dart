@@ -1,4 +1,4 @@
-// import 'package:cool_app/pages/discover_product_detail.dart';
+import 'package:cool_app/pages/discover_product_detail.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +7,7 @@ import '../controller/product_controller.dart';
 import '../custom/widget/categories_builder.dart';
 import '../custom/widget/loading/loading_builder.dart';
 import '../custom/widget/search_bar.dart';
+import 'utils/appBar_builder.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -19,21 +20,16 @@ class _DiscoverPageState extends State<DiscoverPage>
     with SingleTickerProviderStateMixin {
   late TabController tabController;
   late ScrollController _scrollViewController;
-  late List<dynamic> tempCategorie;
 
   @override
   void initState() {
+    var controller = Provider.of<ProductController>(context, listen: false);
+    controller.loadOrderByCategorie(controller.currentCategory);
     _scrollViewController = ScrollController(initialScrollOffset: 0.0);
-    // var controller = Provider.of<ProductController>(context, listen: false);
-    Provider.of<ProductController>(context, listen: false).loadCatogories();
-    Provider.of<ProductController>(context, listen: false).loadProduct();
     var length = Provider.of<ProductController>(context, listen: false)
         .catogories
         .length;
-    tabController =
-        TabController(vsync: this, length: length == 0 ? 20 : length);
-    // controller.currentCategory = controller.catogories.first;
-    // debugPrint(controller.currentCategory);
+    tabController = TabController(vsync: this, length: length);
     super.initState();
   }
 
@@ -47,6 +43,7 @@ class _DiscoverPageState extends State<DiscoverPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarBuilder.appbarBuilder(),
       body: SafeArea(
         child: Consumer<ProductController>(
           builder: (context, value, child) =>
@@ -83,13 +80,7 @@ class _DiscoverPageState extends State<DiscoverPage>
                   alignment: Alignment.center,
                   child: controller.loadingStateView ==
                           LoadingStateView.onProcessing
-                      // ? const CupertinoActivityIndicator()
-                      ? LoadingBuilder(
-                          enabled: true,
-                          baseColor: Colors.white,
-                          highlightColor: Colors.grey.withOpacity(0.2),
-                          child: _itemLoadingBuilder(controller),
-                        )
+                      ? _itemLoadingBuilder(controller)
                       : tabBarViewBuilder(controller)),
             ),
           ),
@@ -101,11 +92,12 @@ class _DiscoverPageState extends State<DiscoverPage>
   Widget sliverAppBarBuilder(BuildContext context) {
     return Consumer<ProductController>(
       builder: (context, value, child) => SliverAppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
         floating: true,
         pinned: true,
         bottom: tabBarBuilder(value),
-        expandedHeight: 230,
+        expandedHeight: 160,
         flexibleSpace: FlexibleSpaceBar(
           collapseMode: CollapseMode.pin,
           background: bodyElement(context),
@@ -124,15 +116,15 @@ class _DiscoverPageState extends State<DiscoverPage>
 
   Widget bodyElement(BuildContext context) {
     return Column(
-      children: [
+      children: const [
         //builder header
-        headerBuilder(context),
+        // headerBuilder(context),
 
         // //search builder
-        const SearchBuilder(),
+        SearchBuilder(),
 
         // categoies_builder
-        const Align(
+        Align(
           alignment: Alignment.centerLeft,
           child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
@@ -161,17 +153,24 @@ class _DiscoverPageState extends State<DiscoverPage>
       tabs: controller.catogories
           .map(
             (item) => Tab(
-              child: Column(
-                children: [
-                  categoriesBuilder(item.toString()),
-                ],
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: controller.currentCategory != item.toString()
+                        ? Colors.white
+                        : Colors.orangeAccent,
+                    borderRadius: BorderRadius.circular(8)),
+                child:
+                    categoriesBuilder(item.toString(), controller: controller),
               ),
             ),
           )
           .toList(),
       onTap: (value) {
-        controller.onChange(controller.catogories[value]);
-        controller.loadOrderByCategorie(controller.catogories[value]);
+        if (controller.catogories[value] != controller.currentCategory) {
+          controller.onChange(controller.catogories[value]);
+          controller.loadOrderByCategorie(controller.catogories[value]);
+        }
       },
     );
   }
@@ -188,28 +187,37 @@ class _DiscoverPageState extends State<DiscoverPage>
     );
   }
 
-  ListView _viewItemBuilder(ProductController controller) {
+  Widget _viewItemBuilder(ProductController controller) {
     return ListView.builder(
       primary: true,
       itemCount: controller.product.length,
       itemBuilder: (context, index) {
         var product = controller.product[index];
-        return Container(
-          height: 50,
-          width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.all(5),
-          decoration: BoxDecoration(
-              color: Colors.white, borderRadius: BorderRadius.circular(10)),
-          child: ListTile(
-            leading: Container(
-                height: 100,
-                width: 80,
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image:
-                            NetworkImage(product.images!.first.toString())))),
-            title: Text(product.brand.toString()),
-            subtitle: Text(product.description.toString()),
+        return InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) =>
+                        DiscoverDetailPage(product: product))));
+            debugPrint(product.title);
+          },
+          child: Container(
+            height: 50,
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                color: Colors.white, borderRadius: BorderRadius.circular(10)),
+            child: ListTile(
+              leading: Container(
+                  height: 100,
+                  width: 80,
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: NetworkImage(product.thumbnail.toString())))),
+              title: Text(product.brand.toString()),
+              subtitle: Text(product.description.toString()),
+            ),
           ),
         );
       },
@@ -224,43 +232,19 @@ class _DiscoverPageState extends State<DiscoverPage>
         return Container(
           height: 50,
           width: MediaQuery.of(context).size.width,
-          margin: const EdgeInsets.all(4),
+          margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.circular(5)),
+              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+          child: const ListTile(
+            leading: SizedBox(
+                height: 100,
+                width: 80,
+                child: ShimmerLoadingBuilder.rectangular(height: 64, width: 5)),
+            title: ShimmerLoadingBuilder.rectangular(height: 16, width: 5),
+            subtitle: ShimmerLoadingBuilder.rectangular(height: 14, width: 2),
+          ),
         );
       },
     );
   }
-
-  // Widget objectBuilder(ProductController controller) {
-  //   return InkWell(
-  //     onTap: () {
-  //       Navigator.push(
-  //           context,
-  //           MaterialPageRoute(
-  //               builder: (context) => const DiscoverDetailPage()));
-  //     },
-  //     child: ListView.builder(
-  //         shrinkWrap: true,
-  //         itemCount: controller.catogories.length,
-  //         itemBuilder: ((context, index) {
-  //           var product = controller.catogories[index];
-  //           return Container(
-  //             margin: const EdgeInsets.all(4),
-  //             decoration: const BoxDecoration(color: Colors.white),
-  //             child: ListTile(
-  //               // leading: Container(
-  //               //     height: 100,
-  //               //     width: 80,
-  //               //     decoration: BoxDecoration(
-  //               //         image: DecorationImage(
-  //               //             image: NetworkImage(
-  //               //                 product.images!.first.toString())))),
-  //               title: Text(product.toString()),
-  //               subtitle: Text(product.toString()),
-  //             ),
-  //           );
-  //         })),
-  //   );
-  // }
 }

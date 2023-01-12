@@ -1,22 +1,20 @@
 import 'package:cool_app/controller/animation/add_to_card_controller.dart';
+import 'package:cool_app/controller/base_controller.dart';
 import 'package:cool_app/controller/product_controller.dart';
 import 'package:cool_app/controller/widget/widget_builder_controller.dart';
+import 'package:cool_app/custom/widget/loading/loading_builder.dart';
+import 'package:cool_app/pages/cart/cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/item_controller.dart';
 import '../custom/widget/button/button_card.dart';
 import '../custom/widget/categories_builder.dart';
-import '../custom/widget/list_view_item_builder.dart';
 import '../custom/widget/san_box.dart';
 import '../custom/widget/search_bar.dart';
+import '../domain/product_model.dart';
 import '../enum/notification_type.dart';
-
-var image = [
-  'https://restaurantclicks.com/wp-content/uploads/2022/09/Starbucks-Decaf-Coffee-Drinks.jpg',
-  'https://www.tastingtable.com/img/gallery/consider-this-before-adding-syrup-and-sweetener-to-your-starbucks-drink/intro-1663619146.jpg',
-  'https://hips.hearstapps.com/hmg-prod/images/the-new-chilled-cup-series-instant-drinks-will-be-news-photo-992237242-1531155941.jpg',
-  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRbbs8FNEBrg9jFGy2-GVu5rYvSl11317Sl0kI2v29G48XnuaTjpDpY9dDHLBr1su5gPEw&usqp=CAU'
-];
+import 'discover_product_detail.dart';
+import 'utils/appBar_builder.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,39 +25,194 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
+  late TabController tabController;
+  late ScrollController _scrollViewController;
 
   @override
   void initState() {
+    var controller = Provider.of<ProductController>(context, listen: false);
+    controller.loadOrderByCategorie(controller.currentCategory);
+    _scrollViewController = ScrollController(initialScrollOffset: 0.0);
+    var length = Provider.of<ProductController>(context, listen: false)
+        .catogories
+        .length;
+    tabController = TabController(vsync: this, length: length);
     super.initState();
-    _tabController = TabController(vsync: this, length: categories.length);
-    // Provider.of<ProductController>(context, listen: false).service.getAll();
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    tabController.dispose();
+    _scrollViewController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBarBuilder.appbarBuilder(
+        onTap: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CartPage()));
+        },
+      ),
       body: SafeArea(
-          child: Stack(
-        children: [
-          // seconaryBodyBuilder(),
-          firstBodyBuilder(),
+        child: bodyBuilder(),
 
-          //animation add item to cart
-          Consumer<AddToCardBuilder>(
-            builder: (context, value, child) => Container(
-              child: value.flyingcart,
-            ),
-          )
-        ],
-      )),
+        //     //animation add item to cart
+        //     Consumer<AddToCardBuilder>(
+        //       builder: (context, value, child) => Container(
+        //         child: value.flyingcart,
+        //       ),
+        //     )
+        //   ],
+        // )
+      ),
       // floatingActionButton: floatingActionButtonBuilder()
+    );
+  }
+
+  Widget bodyBuilder() {
+    var controller = context.watch<ProductController>();
+    return LayoutBuilder(builder: (context, boxContrain) {
+      return Container(
+        color: Colors.grey[200],
+        child: CustomScrollView(
+          slivers: [
+            sliverAppBarBuilder(context),
+            SliverPadding(
+              padding: const EdgeInsets.all(10),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisExtent: 250,
+                    childAspectRatio: 1.0,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0),
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    return controller.loadingStateView ==
+                            LoadingStateView.onProcessing
+                        ? gridShimmerLoading()
+                        : gridItemBuilder(controller.product[index]);
+                  },
+                  childCount: controller.product.length,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  Widget gridShimmerLoading() {
+    return Card(
+      margin: EdgeInsets.zero,
+      child: Column(
+        children: [
+          Container(
+            height: 130,
+            width: 180,
+            margin: const EdgeInsets.all(10),
+            child:
+                const ShimmerLoadingBuilder.rectangular(width: 50, height: 50),
+          ),
+          ListTile(
+            contentPadding: const EdgeInsets.only(left: 15, right: 10),
+            title:
+                const ShimmerLoadingBuilder.rectangular(width: 50, height: 20),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: const [
+                Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child:
+                      ShimmerLoadingBuilder.rectangular(width: 60, height: 15),
+                ),
+                SizedBox(height: 6),
+                Padding(
+                  padding: EdgeInsets.only(top: 4),
+                  child:
+                      ShimmerLoadingBuilder.rectangular(width: 50, height: 10),
+                ),
+              ],
+            ),
+            trailing:
+                const ShimmerLoadingBuilder.rectangular(width: 40, height: 35),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget gridItemBuilder(ProductModel product) {
+    return InkWell(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => DiscoverDetailPage(product: product)));
+      },
+      child: Card(
+        margin: EdgeInsets.zero,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: 130,
+                width: 180,
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: NetworkImage(product.thumbnail.toString()))),
+              ),
+              ListTile(
+                contentPadding: const EdgeInsets.only(left: 15, right: 10),
+                title: Text(
+                  product.title.toString(),
+                  style: const TextStyle(
+                      fontWeight: FontWeight.w600, fontSize: 16),
+                  softWrap: true,
+                ),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        "\$${product.price}",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 16),
+                        softWrap: true,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    SizedBox(
+                      height: 20,
+                      width: 80,
+                      child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: 4,
+                          itemBuilder: ((context, index) {
+                            return const Icon(Icons.star,
+                                color: Colors.orangeAccent, size: 16);
+                          })),
+                    )
+                  ],
+                ),
+                trailing: IconButton(
+                    onPressed: () {}, icon: const Icon(Icons.shopping_bag)),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -81,62 +234,20 @@ class _HomePageState extends State<HomePage>
     );
   }
 
-  Widget firstBodyBuilder() {
-    return NestedScrollView(
-        // floatHeaderSlivers: true,
-        headerSliverBuilder: ((context, innerBoxIsScrolled) {
-          return [sliverAppBarBuilder(context)];
-        }),
-        body: tabBarViewBuilder());
-  }
-
-  // Widget seconaryBodyBuilder() {
-  //   return CustomScrollView(
-  //     slivers: [
-  //       sliverAppBarBuilder(context),
-  //       SliverPersistentHeader(delegate: SliverAppBarDelegate(tabBarBuilder()))
-  //     ],
-  //   );
-  // }
-
   Widget sliverAppBarBuilder(BuildContext context) {
-    return SliverAppBar(
-      backgroundColor: Colors.white,
-      floating: true,
-      pinned: true,
-      bottom: tabBarBuilder(),
-      actions: [
-        Padding(
-          padding: const EdgeInsets.only(right: 16, top: 8),
-          child: notificationCardBuilder(
-              icon: const Icon(
-            Icons.shopping_bag,
-            size: 30,
-            color: Colors.grey,
-          )),
-        )
-      ],
-      expandedHeight: 500,
-      flexibleSpace: FlexibleSpaceBar(
-        collapseMode: CollapseMode.pin,
-        background: bodyElement(context),
-      ),
-    );
-  }
-
-  Widget bodyBuilder() {
-    return NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverToBoxAdapter(
-            child: bodyElement(context),
-          )
-        ];
-      },
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 15),
-        child: tabBarViewBuilder(),
+    return Consumer<ProductController>(
+      builder: (context, value, child) => SliverAppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        floating: true,
+        pinned: true,
+        bottom: tabBarBuilder(value),
+        // expandedHeight: 415,
+        expandedHeight: 150,
+        flexibleSpace: FlexibleSpaceBar(
+          collapseMode: CollapseMode.pin,
+          background: bodyElement(context),
+        ),
       ),
     );
   }
@@ -144,21 +255,18 @@ class _HomePageState extends State<HomePage>
   Widget bodyElement(BuildContext context) {
     return Column(
       children: [
-        //builder header
-        headerBuilder(context),
-
         // //search builder
         const SearchBuilder(),
 
         //Recommanded
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-              child: Text("Recommanded",
-                  style:
-                      TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))),
-        ),
+        // const Align(
+        //   alignment: Alignment.centerLeft,
+        //   child: Padding(
+        //       padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        //       child: Text("Recommanded",
+        //           style:
+        //               TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))),
+        // ),
 
         //page view builder
         // SizedBox(
@@ -175,53 +283,47 @@ class _HomePageState extends State<HomePage>
                   style:
                       TextStyle(fontWeight: FontWeight.bold, fontSize: 16.5))),
         ),
-
-        //tabBarBuilder
-        // tabBarBuilder(),
       ],
     );
   }
 
-  Widget tabBarViewBuilder() {
-    return TabBarView(
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-      physics: const NeverScrollableScrollPhysics(),
-      controller: _tabController,
-      children: const [
-        ViewItemBuilder(),
-        ViewItemBuilder(),
-        ViewItemBuilder(),
-        ViewItemBuilder(),
-        ViewItemBuilder(),
-      ],
-    );
-  }
-
-  TabBar tabBarBuilder() {
+  TabBar tabBarBuilder(ProductController controller) {
     return TabBar(
-      controller: _tabController,
-      // physics: const NeverScrollableScrollPhysics(),
+      controller: tabController,
       unselectedLabelColor: Colors.black,
       indicatorSize: TabBarIndicatorSize.tab,
       labelColor: Colors.black.withOpacity(0.3),
       isScrollable: true,
+      indicatorColor: Colors.red,
       indicatorWeight: 8,
       indicator: BoxDecoration(
         color: Colors.transparent,
         border: Border(
             bottom: BorderSide(color: Colors.black.withOpacity(0.3), width: 2)),
       ),
-      tabs: [
-        ...categories.map(
-          (item) => Tab(
-            child: Column(
-              children: [
-                categoriesBuilder(item),
-              ],
+      tabs: controller.catogories
+          .map(
+            (item) => Tab(
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: controller.currentCategory != item.toString()
+                        ? Colors.white
+                        : Colors.orangeAccent,
+                    borderRadius: BorderRadius.circular(8)),
+                child:
+                    categoriesBuilder(item.toString(), controller: controller),
+              ),
             ),
-          ),
-        ),
-      ],
+          )
+          .toList(),
+      onTap: (value) {
+        // controller.tabBarAction(controller.catogories[value]);
+        if (controller.catogories[value] != controller.currentCategory) {
+          controller.onChange(controller.catogories[value]);
+          controller.loadOrderByCategorie(controller.catogories[value]);
+        }
+      },
     );
   }
 
@@ -237,6 +339,7 @@ class _HomePageState extends State<HomePage>
     return Consumer2<AddToCardBuilder, ItemController>(
       builder: (context, cartController, itemController, child) {
         return ButtonCartBuilder(
+          padding: const EdgeInsets.all(0),
           value: "5",
           // value: itemController.currentQtyItem(item.id.toString()).toString(),
           notificationType: NotificationType.appBar,

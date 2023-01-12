@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../controller/product_controller.dart';
+
 // import 'package:flutter/src/widgets/container.dart';
 // import 'package:flutter/src/widgets/framework.dart';
 var categories = ["Hot", "Iced", "Food", "Beer", "Set food"];
@@ -38,16 +40,14 @@ class CategoriesBuilder extends StatelessWidget {
   }
 }
 
-Widget categoriesBuilder(String title) {
-  return Container(
-    padding: const EdgeInsets.all(10),
-    alignment: Alignment.center,
-    decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(15)),
-    child: Text(
-      title,
-      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
-    ),
+Widget categoriesBuilder(String title, {ProductController? controller}) {
+  return Text(
+    title,
+    style: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 14,
+        color: controller!.currentCategory != title.toString()
+            ? Colors.grey
+            : Colors.white),
   );
 }
