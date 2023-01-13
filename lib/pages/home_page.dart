@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               LoadingStateView.onProcessing
                           ? gridShimmerLoading()
                           : gridItemBuilder(
-                              controller.product[index], keyCap![index]);
+                              controller.product[index], keyCap[index]);
                     },
                     childCount: controller.product.length,
                   ),
