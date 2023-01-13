@@ -1,4 +1,5 @@
 import 'package:cool_app/pages/discover_product_detail.dart';
+import 'package:cool_app/theme/configs/font_size.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -119,7 +120,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       children: const [
         //builder header
         // headerBuilder(context),
-
+        SizedBox(height: 8),
         // //search builder
         SearchBuilder(),
 
@@ -203,20 +204,36 @@ class _DiscoverPageState extends State<DiscoverPage>
             debugPrint(product.title);
           },
           child: Container(
-            height: 50,
+            height: 70,
             width: MediaQuery.of(context).size.width,
-            margin: const EdgeInsets.all(5),
+            margin: const EdgeInsets.all(8),
+            alignment: Alignment.center,
             decoration: BoxDecoration(
-                color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                color: Colors.white10, borderRadius: BorderRadius.circular(10)),
             child: ListTile(
               leading: Container(
-                  height: 100,
                   width: 80,
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: NetworkImage(product.thumbnail.toString())))),
-              title: Text(product.brand.toString()),
-              subtitle: Text(product.description.toString()),
+              title: Text(
+                product.title.toString(),
+                style: const TextStyle(
+                    fontSize: titleSize, fontWeight: FontWeight.w600),
+              ),
+              subtitle: SizedBox(
+                // width: 100,
+                child: Text(
+                  product.description.toString(),
+                  softWrap: false,
+                  style: const TextStyle(
+                      fontSize: subtitleSize, fontWeight: FontWeight.w500),
+                ),
+              ),
+              trailing: Text(
+                "\$${product.price}",
+                style: const TextStyle(color: Colors.grey),
+              ),
             ),
           ),
         );
@@ -230,7 +247,7 @@ class _DiscoverPageState extends State<DiscoverPage>
       itemCount: controller.product.length,
       itemBuilder: (context, index) {
         return Container(
-          height: 50,
+          height: 70,
           width: MediaQuery.of(context).size.width,
           margin: const EdgeInsets.all(5),
           decoration: BoxDecoration(
@@ -241,7 +258,10 @@ class _DiscoverPageState extends State<DiscoverPage>
                 width: 80,
                 child: ShimmerLoadingBuilder.rectangular(height: 64, width: 5)),
             title: ShimmerLoadingBuilder.rectangular(height: 16, width: 5),
-            subtitle: ShimmerLoadingBuilder.rectangular(height: 14, width: 2),
+            subtitle: SizedBox(
+              width: 100,
+              child: ShimmerLoadingBuilder.rectangular(height: 14, width: 2),
+            ),
           ),
         );
       },

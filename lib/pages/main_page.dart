@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../controller/widget/widget_builder_controller.dart';
+import 'animation/add_to_card_animation.dart';
 import 'discover_page.dart';
 import 'favorite_page.dart';
 import 'home_page.dart';
@@ -22,16 +23,12 @@ class _MainPageState extends State<MainPage> {
     List<Widget> widget = <Widget>[
       const HomePage(),
       const DiscoverPage(),
-      const FavoritePage(),
+     CartPage(),
       const SettingPage()
     ];
     var controller = Provider.of<WidgetBuilderController>(context);
     return Scaffold(
-      body: SafeArea(
-        child: Center(
-          child: widget.elementAt(controller.currentPage as int),
-        ),
-      ),
+      body: widget.elementAt(controller.currentPage as int),
       bottomNavigationBar: bottomNavBarBuilder(controller),
     );
   }

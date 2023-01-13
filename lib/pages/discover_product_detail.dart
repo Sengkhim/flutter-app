@@ -1,4 +1,7 @@
 import 'package:cool_app/domain/product_model.dart';
+import 'package:cool_app/pages/home_page.dart';
+import 'package:cool_app/pages/main_page.dart';
+import 'package:cool_app/theme/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:page_indicator/page_indicator.dart';
 import 'package:provider/provider.dart';
@@ -7,6 +10,8 @@ import '../controller/item_controller.dart';
 import '../custom/dialogs/dialogs_card.dart';
 import '../custom/widget/button/button_card.dart';
 import '../enum/notification_type.dart';
+import 'cart/cart_page.dart';
+import 'check_out_page.dart';
 
 class DiscoverDetailPage extends StatefulWidget {
   const DiscoverDetailPage({super.key, required this.product});
@@ -42,7 +47,41 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
       ),
     );
     return Scaffold(
-      // appBar: appBarBuilder(context),
+      appBar: AppBar(
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        actions: [
+          Align(
+            alignment: Alignment.center,
+            child: Consumer2<AddToCardBuilder, ItemController>(
+              builder: (context, cartController, itemController, child) {
+                return ButtonCartBuilder(
+                  padding: const EdgeInsets.only(right: 25, top: 5),
+                  value: "5",
+                  notificationType: NotificationType.appBar,
+                  icon: Icons.shopping_bag_rounded,
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const CartPage()));
+                  },
+                );
+              },
+            ),
+          )
+        ],
+        backgroundColor: appBarColor,
+        title: const Text(
+          "Detail",
+          style: TextStyle(fontWeight: FontWeight.w700),
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           scrollDirection: Axis.vertical,
@@ -98,12 +137,12 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
         ),
 
         //colors
-        const Padding(
-          padding: EdgeInsets.only(left: 15, top: 12),
-          child: Text("Colors",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
-        ),
-        colorSelector(),
+        // const Padding(
+        //   padding: EdgeInsets.only(left: 15, top: 12),
+        //   child: Text("Colors",
+        //       style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+        // ),
+        // colorSelector(),
 
         //quanitity
         const Padding(
@@ -113,15 +152,14 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
         ),
         quanitityBuilder(),
 
-        const SizedBox(height: 4),
         //add to cart
         ListTile(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-          ),
+          // leading: IconButton(
+          //   icon: const Icon(Icons.arrow_back),
+          //   onPressed: () {
+          //     Navigator.of(context).pop(true);
+          //   },
+          // ),
           title: InkWell(
             onTap: () {
               CustomDialog.showDialogs<String>(
@@ -169,7 +207,10 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const MainPage()));
                         },
                         child: const Text(
                           "Continue shopping",
@@ -178,14 +219,27 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                         )),
                   ),
                   const SizedBox(height: 10),
-                  const Align(
+                  Align(
                     alignment: Alignment.center,
-                    child: Text(
-                      "Check Out",
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey),
+                    child: InkWell(
+                      splashColor: Colors.white,
+                      highlightColor: Colors.white,
+                      focusColor: Colors.white,
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (context) => const CheckOutPage()));
+                      },
+                      child: const Text(
+                        "Check Out",
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -193,7 +247,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
               );
             },
             child: Container(
-              height: 45,
+              height: 35,
               alignment: Alignment.center,
               decoration: BoxDecoration(
                   color: Colors.orangeAccent,
@@ -372,23 +426,9 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
             return ButtonCartBuilder(
               padding: const EdgeInsets.only(right: 18, top: 5),
               value: "5",
-              // value: itemController.currentQtyItem(item.id.toString()).toString(),
               notificationType: NotificationType.appBar,
-              icon: Container(
-                  alignment: Alignment.center,
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(50)),
-                  child: const Icon(Icons.shopping_bag_rounded,
-                      size: 25, color: Colors.grey)),
-              onPressed: () async {
-                // cartController.animateBuilder();
-                // await cartController.disposeAnimateBuilder();
-                // itemController.addItemToCard(item.id, item);
-                // itemController.submitedCart(itemController.itemListCard);
-              },
+              icon: Icons.shopping_bag_rounded,
+              onPressed: () async {},
             );
           },
         )

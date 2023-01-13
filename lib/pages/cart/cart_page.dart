@@ -1,6 +1,8 @@
 import 'package:cool_app/custom/dialogs/dialogs_card.dart';
+import 'package:cool_app/pages/check_out_page.dart';
 import 'package:flutter/material.dart';
 import '../../custom/button/adjustment_builder.dart';
+import '../../theme/colors.dart';
 
 String img = 'https://i.dummyjson.com/data/products/16/1.png';
 
@@ -25,7 +27,7 @@ class CartPage extends StatelessWidget {
           },
         ),
         elevation: 0.0,
-        backgroundColor: Colors.black87,
+        backgroundColor: appBarColor,
         actions: [
           IconButton(
               onPressed: () {},
@@ -50,7 +52,7 @@ class CartPage extends StatelessWidget {
 
             //check out
             SizedBox(
-              height: 50,
+              height: 35,
               width: MediaQuery.of(context).size.width * .94,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
@@ -59,7 +61,13 @@ class CartPage extends StatelessWidget {
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          fullscreenDialog: true,
+                          builder: (context) => const CheckOutPage()));
+                },
                 child: const Text(
                   "Check Out",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
@@ -147,7 +155,7 @@ class CartPage extends StatelessWidget {
                     child: ListTile(
                       contentPadding: const EdgeInsets.only(right: 4, left: 4),
                       title: const Text(
-                        "Do you want to remove this item ?",
+                        "Do you want to remove this item?",
                         style: TextStyle(
                             fontWeight: FontWeight.w700,
                             color: Colors.grey,
@@ -157,10 +165,12 @@ class CartPage extends StatelessWidget {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orangeAccent,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
                           child: const Text("Okay")),
                     ),
                   ),
@@ -246,17 +256,22 @@ class CartPage extends StatelessWidget {
                   const SizedBox(height: 8),
                   //check out
                   SizedBox(
-                    height: 35,
+                    height: 30,
                     width: MediaQuery.of(context).size.width * 30,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.orangeAccent,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       onPressed: () {
                         Navigator.pop(context);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                fullscreenDialog: true,
+                                builder: (context) => const CheckOutPage()));
                       },
                       child: const Text(
                         "Check Out",
@@ -270,10 +285,10 @@ class CartPage extends StatelessWidget {
               );
             },
             onLongPress: () {
-              CustomDialog.showDialogs<String>(context);
+              // CustomDialog.showDialogs<String>(context);
             },
             onDoubleTap: () {
-              CustomDialog.showDialogs<String>(context);
+              // CustomDialog.showDialogs<String>(context);
             },
             child: Padding(
               padding: const EdgeInsets.only(top: 20, left: 15, right: 15),

@@ -151,7 +151,8 @@ class _ViewItemBuilderState extends State<ViewItemBuilder> {
                     .currentQtyItem(item.id.toString())
                     .toString(),
                 notificationType: NotificationType.none,
-                icon: const Icon(Icons.shopping_cart, size: 32),
+                // icon:  Icon(Icons.shopping_cart, size: 32),
+                icon: Icons.shopping_bag_rounded,
                 onPressed: () async {
                   switch (cartController.currentCardAction) {
                     case AddToCartAction.onAdjustment:
