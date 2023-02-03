@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   void initState() {
-    var controller = Provider.of<ProductController>(context, listen: false);
+    final controller = Provider.of<ProductController>(context, listen: false);
     controller.loadOrderByCategorie(controller.currentCategory);
     _scrollViewController = ScrollController(initialScrollOffset: 0.0);
     var length = Provider.of<ProductController>(context, listen: false)
@@ -81,7 +81,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         },
       ),
       body: SafeArea(child: bodyBuilder()),
-      floatingActionButton: floatingActionButtonBuilder()
+      // floatingActionButton: floatingActionButtonBuilder()
     );
   }
 
@@ -278,7 +278,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         //ADD TO CARD ANIMATION FLYING
-                        Consumer<AddToCardBuilder>(
+                        Consumer<CartAnimationControlller>(
                           builder: (context, value, child) => InkWell(
                               onTap: () {
                                 setState(() {
@@ -437,7 +437,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Widget notificationCardBuilder({required Widget icon}) {
-    return Consumer2<AddToCardBuilder, ItemController>(
+    return Consumer2<CartAnimationControlller, ItemController>(
       builder: (context, cartController, itemController, child) {
         return ButtonCartBuilder(
           padding: const EdgeInsets.all(0),

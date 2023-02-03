@@ -1,5 +1,4 @@
 import 'package:cool_app/domain/product_model.dart';
-import 'package:cool_app/pages/home_page.dart';
 import 'package:cool_app/pages/main_page.dart';
 import 'package:cool_app/theme/colors.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +57,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
         actions: [
           Align(
             alignment: Alignment.center,
-            child: Consumer2<AddToCardBuilder, ItemController>(
+            child: Consumer2<CartAnimationControlller, ItemController>(
               builder: (context, cartController, itemController, child) {
                 return ButtonCartBuilder(
                   padding: const EdgeInsets.only(right: 25, top: 5),
@@ -421,7 +420,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
       elevation: 0.0,
       backgroundColor: Colors.white,
       actions: [
-        Consumer2<AddToCardBuilder, ItemController>(
+        Consumer2<CartAnimationControlller, ItemController>(
           builder: (context, cartController, itemController, child) {
             return ButtonCartBuilder(
               padding: const EdgeInsets.only(right: 18, top: 5),

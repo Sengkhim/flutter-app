@@ -19,7 +19,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => ItemController()),
 
       //animationController
-      ChangeNotifierProvider(create: (context) => AddToCardBuilder()),
+      ChangeNotifierProvider(create: (context) => CartAnimationControlller()),
       ChangeNotifierProvider(create: (context) => BaseController()),
       ChangeNotifierProvider(create: (context) => WidgetBuilderController()),
     ],
